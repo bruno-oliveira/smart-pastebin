@@ -9,7 +9,8 @@ def create_schema():
     cursor.execute('''CREATE TABLE IF NOT EXISTS snippets (
                         id INTEGER PRIMARY KEY,
                         snippet_id TEXT UNIQUE,
-                        snippet TEXT
+                        snippet TEXT,
+                        explanation TEXT
                     )''')
 
     cursor.close()

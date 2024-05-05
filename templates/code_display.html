@@ -4,14 +4,18 @@
     <title>View Code</title>
 </head>
 <body>
+{% if code != "Not found" %}
 <h1>Code Snippet</h1>
 <textarea rows="10" cols="50" readonly>{{ code }}</textarea>
 <p>Share this URL: {{ request.url_root }}code/{{ code_id }}</p>
 <button type="submit" onclick="explainCode('{{ code_id }}')">Explain This Code</button>
 <md-block id="explanationBox"></md-block>
+{% else %}
+<p>Not a valid snippet id.</p>
+{% endif %}
 <script>
     function explainCode(code) {
-        alert('Code explanation feature would go here.'+code);
+        alert('Code explanation feature would go here.' + code);
         fetch("/explain_code", {
             method: "POST",
             body: JSON.stringify({
@@ -25,7 +29,8 @@
                 console.log(data);
                 document.getElementById('explanationBox').mdContent = data.content;
 
-    });}
+            });
+    }
 </script>
 </body>
 <script type="module" src="https://md-block.verou.me/md-block.js"></script>

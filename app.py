@@ -15,9 +15,6 @@ limiter = Limiter(
     default_limits=["5 per day"],
 )
 
-# Store the codes in a dictionary
-codes = {}
-
 
 @limiter.exempt
 @app.route('/', methods=['GET'])
@@ -32,7 +29,6 @@ def submit_code():
     hash_obj = hashlib.sha256()
     hash_obj.update(code.encode('utf-8'))
     unique_id = hash_obj.hexdigest()
-    codes[unique_id] = code
 
     db = get_db()
     db.execute("INSERT OR IGNORE INTO snippets(snippet_id, snippet) values (?,?)", (unique_id,code))
@@ -63,8 +59,10 @@ def explain_code():
 @limiter.exempt
 @app.route('/code/<code_id>', methods=['GET'])
 def get_code(code_id):
-    code = codes.get(code_id, "Code not found")
-    return render_template('code_display.html', code=code, code_id=code_id)
+    db = get_db()
+    x=db.execute("SELECT snippet from snippets where snippet_id=(?)", (code_id,)).fetchone()
+    db.commit()
+    return render_template('code_display.html', code=x[0] if x is not None else "Not found", code_id=code_id)
 
 
 def get_db():
