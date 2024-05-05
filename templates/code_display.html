@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View Code</title>
+</head>
+<body>
+<h1>Code Snippet</h1>
+<textarea rows="10" cols="50" readonly>{{ code }}</textarea>
+<p>Share this URL: {{ request.url_root }}code/{{ code_id }}</p>
+<button type="submit" onclick="explainCode('{{ code_id }}')">Explain This Code</button>
+<md-block id="explanationBox"></md-block>
+<script>
+    function explainCode(code) {
+        alert('Code explanation feature would go here.'+code);
+        fetch("/explain_code", {
+            method: "POST",
+            body: JSON.stringify({
+                id: code
+            }),
+            headers: {
+                "Content-type": "application/json; charset=UTF-8"
+            }
+        }).then(response => response.json())
+            .then(data => {
+                console.log(data);
+                document.getElementById('explanationBox').mdContent = data.content;
+
+    });}
+</script>
+</body>
+<script type="module" src="https://md-block.verou.me/md-block.js"></script>
+</html>
